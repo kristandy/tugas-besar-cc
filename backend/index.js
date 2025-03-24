@@ -1,5 +1,7 @@
 //import express
 const express = require("express");
+const terapisRoutes = require("./src/routes/terapis-routes.js");
+const errorHandler = require("./src/utils/error-handler");
 
 //import CORS
 const cors = require("cors");
@@ -25,6 +27,19 @@ const port = 3000;
 //route
 app.get("/", (req, res) => {
   res.send("Hello World!");
+});
+
+app.use("/api/terapis", terapisRoutes);
+
+// Error handling middleware
+app.use(errorHandler);
+
+// 404 Route
+app.use("*", (req, res) => {
+  res.status(404).json({
+    status: "error",
+    message: "Route not found",
+  });
 });
 
 //start server
