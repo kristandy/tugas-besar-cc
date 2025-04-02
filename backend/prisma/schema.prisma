@@ -9,7 +9,7 @@ generator client {
 }
 
 datasource db {
-  provider = "mysql"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
@@ -18,40 +18,53 @@ enum Gender {
   P
 }
 
+enum HariSatuMinggu {
+  Senin
+  Selasa
+  Rabu
+  Kamis
+  Jumat
+  Sabtu
+  Minggu
+}
+
 model Layanan {
-  id Int @id @default(autoincrement())
-  paket String @db.VarChar(20)
-  deskripsi_paket String @db.VarChar(100)
-  jam_paket Int
-  Keahlian Keahlian[]
+  id              Int        @id @default(autoincrement())
+  paket           String     @db.VarChar(20)
+  deskripsi_paket String     @db.VarChar(100)
+  jam_paket       Int
+  Keahlian        Keahlian[]
+
   @@map("layanan")
 }
 
 model Keahlian {
-  id Int @id @default(autoincrement())
-  keahlian String @db.VarChar(50)
+  id         Int     @id @default(autoincrement())
+  keahlian   String  @db.VarChar(50)
   id_layanan Int
-  layanan Layanan @relation(fields: [id_layanan], references: [id])
+  layanan    Layanan @relation(fields: [id_layanan], references: [id])
+
   @@map("keahlian")
 }
 
 model Terapis {
-  id Int @id @default(autoincrement())
-  nama String @db.VarChar(50)
+  id            Int         @id @default(autoincrement())
+  nama          String      @db.VarChar(50)
   jenis_kelamin Gender
-  nomor_hp String @db.VarChar(13)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  HariKerja HariKerja[]
+  nomor_hp      String      @db.VarChar(13)
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  HariKerja     HariKerja[]
+
   @@map("terapis")
 }
 
 model HariKerja {
-  id Int @id @default(autoincrement())
-  hari_kerja String @db.VarChar(255)
+  id              Int            @id @default(autoincrement())
+  hari_kerja      HariSatuMinggu
   kuota_jam_kerja Int
-  id_terapis Int
-  terapis Terapis @relation(fields: [id_terapis], references: [id])
+  id_terapis      Int
+  terapis         Terapis        @relation(fields: [id_terapis], references: [id])
+
   @@map("hari_kerja")
 }
-
