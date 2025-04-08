@@ -29,42 +29,63 @@ enum HariSatuMinggu {
 }
 
 model Layanan {
-  id              Int        @id @default(autoincrement())
-  paket           String     @db.VarChar(20)
-  deskripsi_paket String     @db.VarChar(100)
+  id              Int      @id @default(autoincrement())
+  paket           String   @db.VarChar(20)
+  deskripsi_paket String   @db.VarChar(100)
   jam_paket       Int
-  Keahlian        Keahlian[]
+  id_keahlian     Int
+  Keahlian        Keahlian @relation(fields: [id_keahlian], references: [id])
 
   @@map("layanan")
 }
 
 model Keahlian {
-  id         Int     @id @default(autoincrement())
-  keahlian   String  @db.VarChar(50)
-  id_layanan Int
-  layanan    Layanan @relation(fields: [id_layanan], references: [id])
+  id              Int               @id @default(autoincrement())
+  keahlian        String            @db.VarChar(50)
+  layanan         Layanan[]
+  TerapisKeahlian TerapisKeahlian[]
 
   @@map("keahlian")
 }
 
 model Terapis {
-  id            Int         @id @default(autoincrement())
-  nama          String      @db.VarChar(50)
-  jenis_kelamin Gender
-  nomor_hp      String      @db.VarChar(13)
-  createdAt     DateTime    @default(now())
-  updatedAt     DateTime    @updatedAt
-  HariKerja     HariKerja[]
+  id               Int                @id @default(autoincrement())
+  nama             String             @db.VarChar(50)
+  jenis_kelamin    Gender
+  nomor_hp         String             @db.VarChar(13)
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @updatedAt
+  TerapisKeahlian  TerapisKeahlian[]
+  TerapisHariKerja TerapisHariKerja[]
 
   @@map("terapis")
 }
 
+model TerapisKeahlian {
+  id          Int      @id @default(autoincrement())
+  id_terapis  Int
+  id_keahlian Int
+  terapis     Terapis  @relation(fields: [id_terapis], references: [id])
+  keahlian    Keahlian @relation(fields: [id_keahlian], references: [id])
+
+  @@map("terapis_keahlian")
+}
+
 model HariKerja {
-  id              Int            @id @default(autoincrement())
-  hari_kerja      HariSatuMinggu
-  kuota_jam_kerja Int
-  id_terapis      Int
-  terapis         Terapis        @relation(fields: [id_terapis], references: [id])
+  id               Int                @id @default(autoincrement())
+  hari_kerja       HariSatuMinggu     @unique
+  TerapisHariKerja TerapisHariKerja[]
 
   @@map("hari_kerja")
+}
+
+model TerapisHariKerja {
+  id         Int       @id @default(autoincrement())
+  id_terapis Int
+  id_hari    Int
+  kuota_jam  Int
+  terapis    Terapis   @relation(fields: [id_terapis], references: [id])
+  hariKerja  HariKerja @relation(fields: [id_hari], references: [id])
+
+  @@map("terapis_hari_kerja")
 }

@@ -1,6 +1,11 @@
 //import express
 const express = require("express");
-const terapisRoutes = require("./src/routes/terapis-routes.js");
+// const terapisRoutes = require("./src/routes/terapis-routes.js");
+const keahlianRoutes = require('./src/routes/keahlianRoutes');
+const terapisRoutes = require('./src/routes/terapisRoutes');
+const layananRoutes = require('./src/routes/layananRoutes');
+const hariKerjaRoutes = require('./src/routes/hariKerjaRoutes');
+
 const errorHandler = require("./src/utils/error-handler");
 
 //import CORS
@@ -29,7 +34,11 @@ app.get("/", (req, res) => {
   res.send("Hello World!");
 });
 
-app.use("/api/terapis", terapisRoutes);
+// app.use("/api/terapis", terapisRoutes);
+app.use('/keahlian', keahlianRoutes);
+app.use('/terapis', terapisRoutes);
+app.use('/layanan', layananRoutes);
+app.use('/hari-kerja', hariKerjaRoutes);
 
 // Error handling middleware
 app.use(errorHandler);
